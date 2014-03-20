@@ -10,6 +10,9 @@ function GameManager(size, InputManager, Actuator, ScoreManager) {
   this.inputManager.on("restart", this.restart.bind(this));
   this.inputManager.on("keepPlaying", this.keepPlaying.bind(this));
 
+  this.moved = function () {
+      this.moves += 1;
+  };
   this.setup();
 }
 
@@ -41,6 +44,7 @@ GameManager.prototype.setup = function () {
   this.over        = false;
   this.won         = false;
   this.keepPlaying = false;
+  this.moves       = 0;
 
   // Add the initial tiles
   this.addStartTiles();
@@ -74,6 +78,7 @@ GameManager.prototype.actuate = function () {
 
   this.actuator.actuate(this.grid, {
     score:      this.score,
+    moves:      this.moves,
     over:       this.over,
     won:        this.won,
     bestScore:  this.scoreManager.get(),
@@ -151,6 +156,8 @@ GameManager.prototype.move = function (direction) {
       }
     });
   });
+
+  self.moved();
 
   if (moved) {
     this.addRandomTile();
